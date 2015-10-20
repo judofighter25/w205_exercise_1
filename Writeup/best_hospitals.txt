@@ -1,0 +1,63 @@
+2.1. best_hospitalsTo determine which hospitals are the best, I first transformed the “Time and Effective Care” data into data with hospital identifier,
+procedure ID, score…etc.  To determine which hospital are among the top, I took a average of the measures (scores) of all the procedures by hospitals and rank the hospital based on this average score.  
+To remove potential data error, I remove anything that’s not text and and score that’s great than 100 in the final query.
+
+Result:
+
+hospitalname                         			Avg_Score  Agg_Score 
+TOWNER COUNTY MEDICAL CENTER				100.0	100
+GORDON MEMORIAL HOSPITAL DISTRICT			100.0	100
+NOVANT HEALTH HAYMARKET MEDICAL CENTER		100.0	700
+SYLVAN GROVE HOSPITAL						100.0	100
+RUMFORD  HOSPITAL						100.0	200
+HILLSBORO AREA HOSPITAL					100.0	300
+GRAND JUNCTION VA MEDICAL CENTER			100.0	800
+CRETE AREA MEDICAL CENTER					100.0	700
+MILLINOCKET REGIONAL HOSPITAL				100.0	600
+ST LUKE'S WOOD RIVER MEDICAL CENTER		100.0	100
+
+(Avg_Score: average score of various procedures per hospital)
+(Agg_Score: aggregate score of various procedures per hospital)2.2. best_states
+When looking at the best state with best hospitals.  I took the average hospital score (which itself is an average of all procedures the hospital performs) at the state level.  This is accomplished by utilizing the Avg_Hospital_Score table which was created to collect average procedures scores at hospital level.
+In other words, state will rank high if its average hospital score is high.  
+The result:
+
+State  Avg_Hospital_Score_State_Level
+VT	90.73569202974443
+DE	88.14258776401633
+NH	88.11079610343951
+ME	87.47704793037467
+VI	87.19642857142857
+DC	86.51475616530962
+NE	86.48839925904907
+PR	85.69573077694734
+MD	85.41077821023438
+CT	85.34054071421002
+2.3. hospital_variability
+For variability of procedures across hospital, I performed the analysis but finding the variance as well as the difference between max and min score by procedure.  
+In other words, what’s the variance of a procedures across hospitals.  In presenting the result, I decide to go with variance instead of difference between
+min and max.  Because variance capture the up and downs of the score while difference between min and max will only give procedures with perfect score and with zero.
+The result:
+
+MeasureID		procedure_variability    max  min
+STK_4			481.98665882944397	100	0
+OP_23			477.18888614639235	100	0
+ED_2b			473.8192024260004	100	0
+AMI_7a			352.6666666666667	73	27
+OP_2				325.74632352941165	100	27
+OP_3b			282.4408681167941	100	21
+IMM_3_FAC_ADHPCT	267.25866979161765	100	2
+VTE_5			265.78796126891007	100	0
+OP_21			249.47678422501573	100	12
+OP_20			246.66297318565395	100	0
+
+2.4. hospitals_and_patients
+Hospital performance can be analyzed through the score or measure in the best hospital, a measure derived from “Time and Effective Care”.  In addition, patient survey responses were collect and put into a table call surveys.  Three overall survey results: OverallRatingofHospitalAchievementPoints, OverallRatingofHospitalImprovementPoints, and OverallRatingofHospitalDimensionScore were created to represent of patient surveys.  Because I need to compare the results on a hospital level, the patient surveys were averaged out and put it into a avg_survey_score table.  
+
+Finally, avg_survey_score  and avg_hospital_score were joined together to form a table called hospital_patient.  In the hospital_patient table, I run a correlation between average procedure scores  vs. the average three survey results mentioned above.  The result:
+
+corr_achieve                       corr_improve                    corr_dimscore
+0.07797961939245239	0.07170610226644719	0.05513478459803181
+
+Overall, the average hospital score showed very little correlation with the average survey results of the 
+three over all surveys.  Base on the dataset given, hospital scores seem to have little correlation with patient surveys.
